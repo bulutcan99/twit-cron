@@ -38,8 +38,8 @@ The application leverages Rust’s concurrency and efficiency to ensure reliable
 
 1. Clone the repository:  
    ```bash
-   git clone https://github.com/<your-username>/cron-twit.git
-   cd cron-twit
+   git clone https://github.com/bulutcan99/twit-cron
+   cd twit-cron
    ```  
 
 2. Install dependencies:  
