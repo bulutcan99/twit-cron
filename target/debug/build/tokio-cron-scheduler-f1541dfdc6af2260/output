@@ -1,3 +1,0 @@
-Manifest /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-cron-scheduler-0.6.8
-Out /Users/bulutgocer/PROJECTS/RUST/github/bulutcan99/twit-cron/target/debug/build/tokio-cron-scheduler-f1541dfdc6af2260/out
-cargo:rerun-if-changed=proto/job.proto
