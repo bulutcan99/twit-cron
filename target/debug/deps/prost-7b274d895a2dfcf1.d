@@ -1,0 +1,11 @@
+/Users/bulutgocer/PROJECTS/RUST/github/bulutcan99/twit-cron/target/debug/deps/libprost-7b274d895a2dfcf1.rmeta: /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/lib.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/error.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/message.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/types.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/encoding.rs
+
+/Users/bulutgocer/PROJECTS/RUST/github/bulutcan99/twit-cron/target/debug/deps/libprost-7b274d895a2dfcf1.rlib: /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/lib.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/error.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/message.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/types.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/encoding.rs
+
+/Users/bulutgocer/PROJECTS/RUST/github/bulutcan99/twit-cron/target/debug/deps/prost-7b274d895a2dfcf1.d: /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/lib.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/error.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/message.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/types.rs /Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/encoding.rs
+
+/Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/lib.rs:
+/Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/error.rs:
+/Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/message.rs:
+/Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/types.rs:
+/Users/bulutgocer/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.10.4/src/encoding.rs:
