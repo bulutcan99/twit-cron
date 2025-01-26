@@ -7,24 +7,11 @@ use serde::Serialize;
 use std::env;
 use tokio_cron_scheduler::{Job, JobScheduler};
 
-#[derive(Serialize)]
+#[derive(oauth::Request, Serialize)]
 struct Tweet {
     text: String,
 }
 
-fn create_oauth1_header(
-    consumer_key: &str,
-    consumer_secret: &str,
-    access_token: &str,
-    token_secret: &str,
-    url: &str,
-    method: &str,
-) -> String {
-    format!(
-        "OAuth oauth_consumer_key=\"{}\", oauth_token=\"{}\", oauth_signature_method=\"HMAC-SHA1\", oauth_version=\"1.0\"",
-        consumer_key, access_token
-    )
-}
 async fn send_tweet(text: &str) -> Result<(), Box<dyn std::error::Error>> {
     // Twitter API anahtarlarını yükle
     let api_key = env::var("TWITTER_API_KEY")?;
@@ -33,10 +20,10 @@ async fn send_tweet(text: &str) -> Result<(), Box<dyn std::error::Error>> {
     let access_token_secret = env::var("TWITTER_ACCESS_TOKEN_SECRET")?;
 
     // Twitter API endpointi
-    let url = "https://api.twitter.com/2/tweets";
+    let uri = "https://api.twitter.com/2/tweets";
 
     // Authorization header'ını oluştur
-    let tweet = Tweet {
+    let request = Tweet {
         text: text.to_string(),
     };
 
@@ -45,26 +32,19 @@ async fn send_tweet(text: &str) -> Result<(), Box<dyn std::error::Error>> {
     println!("ACCESS_KEY: {:?}", access_token.as_str());
     println!("ACCESS SECRET: {:?}", access_token_secret.as_str());
 
-    let oauth_header = create_oauth1_header(
+    let token = oauth::Token::from_parts(
         api_key.as_str(),
         api_secret_key.as_str(),
         access_token.as_str(),
         access_token_secret.as_str(),
-        url,
-        "POST",
     );
 
-    let client = Client::new();
-    let mut headers = HeaderMap::new();
-    headers.insert(AUTHORIZATION, HeaderValue::from_str(&oauth_header)?);
-    headers.insert("Content-Type", HeaderValue::from_static("application/json"));
+    let authorization_header = oauth::post(uri, &request, &token, oauth::HMAC_SHA1);
+    let form = oauth::to_form(&request);
+    let uri = oauth::to_query(uri.to_owned(), &request);
 
-    let res = client
-        .post(url)
-        .headers(headers)
-        .json(&tweet)
-        .send()
-        .await?;
+    let client = Client::new();
+    let res = client.post(uri).json(&request).send().await?;
 
     if res.status().is_success() {
         println!("Tweet başarıyla gönderildi!");
