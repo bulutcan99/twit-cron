@@ -665,6 +665,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "oauth"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "34d44337585cedd48fbd3da670cbb819ec99ce930c528db107008a9148fda838"
+
+[[package]]
 name = "object"
 version = "0.36.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1193,6 +1199,7 @@ name = "twitter-cron"
 version = "0.1.0"
 dependencies = [
  "dotenv",
+ "oauth",
  "reqwest",
  "serde",
  "tokio",
