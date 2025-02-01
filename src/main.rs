@@ -1,93 +1,43 @@
+use anyhow::Result;
+use chrono::prelude::*;
 use dotenv::dotenv;
-use reqwest::{
-    header::{HeaderMap, HeaderValue, AUTHORIZATION},
-    Client,
-};
-use serde::Serialize;
 use std::env;
-use tokio_cron_scheduler::{Job, JobScheduler};
+use twapi_v2::{
+    api::{execute_twitter, post_2_tweets},
+    oauth10a::OAuthAuthentication,
+};
 
-#[derive(oauth::Request, Serialize)]
-struct Tweet {
-    text: String,
-}
+#[tokio::main]
+async fn main() -> Result<()> {
+    dotenv().ok();
+    let api_key = env::var("TWITTER_API_KEY").expect("TWITTER_API_KEY not set");
+    let api_secret_key =
+        env::var("TWITTER_API_SECRET_KEY").expect("TWITTER_API_SECRET_KEY not set");
+    let access_token = env::var("TWITTER_ACCESS_TOKEN").expect("TWITTER_ACCESS_TOKEN not set");
+    let access_token_secret =
+        env::var("TWITTER_ACCESS_TOKEN_SECRET").expect("TWITTER_ACCESS_TOKEN_SECRET not set");
 
-async fn send_tweet(text: &str) -> Result<(), Box<dyn std::error::Error>> {
-    // Twitter API anahtarlarını yükle
-    let api_key = env::var("TWITTER_API_KEY")?;
-    let api_secret_key = env::var("TWITTER_API_SECRET_KEY")?;
-    let access_token = env::var("TWITTER_ACCESS_TOKEN")?;
-    let access_token_secret = env::var("TWITTER_ACCESS_TOKEN_SECRET")?;
-
-    // Twitter API endpointi
-    let uri = "https://api.twitter.com/2/tweets";
-
-    // Authorization header'ını oluştur
-    let request = Tweet {
-        text: text.to_string(),
-    };
-
-    println!("API_KEY: {:?}", api_key.as_str());
-    println!("API_SECRET_KEY: {:?}", api_secret_key.as_str());
-    println!("ACCESS_KEY: {:?}", access_token.as_str());
-    println!("ACCESS SECRET: {:?}", access_token_secret.as_str());
-
-    let token = oauth::Token::from_parts(
+    println!(
+        "{:?}, {:?}, {:?}, {:?}",
         api_key.as_str(),
         api_secret_key.as_str(),
         access_token.as_str(),
-        access_token_secret.as_str(),
+        access_token_secret.as_str()
     );
+    let auth = OAuthAuthentication::new(api_key, api_secret_key, access_token, access_token_secret);
 
-    let authorization_header = oauth::post(uri, &request, &token, oauth::HMAC_SHA1);
-    let form = oauth::to_form(&request);
-    let uri = oauth::to_query(uri.to_owned(), &request);
+    let now = Utc::now();
+    let body = post_2_tweets::Body {
+        text: Some(format!("now! {}, {}", now, "SAAA")),
+        ..Default::default()
+    };
+    let builder = post_2_tweets::Api::new(body).build(&auth);
+    let (res, _rate_limit) = execute_twitter::<serde_json::Value>(builder).await?;
 
-    let client = Client::new();
-    let res = client.post(uri).json(&request).send().await?;
+    println!("{}", serde_json::to_string(&res).unwrap());
 
-    if res.status().is_success() {
-        println!("Tweet başarıyla gönderildi!");
-    } else {
-        println!("Tweet gönderilirken hata oluştu: {:?}", res.text().await?);
-    }
+    let response = serde_json::from_value::<post_2_tweets::Response>(res)?;
+    assert_eq!(response.is_empty_extra(), true);
 
-    Ok(())
-}
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Çevre değişkenlerini yükle
-    dotenv().ok();
-
-    // Cron Scheduler oluştur
-    let scheduler = JobScheduler::new().await?;
-
-    // Cron Job tanımla (1 saatte bir çalışacak)
-    // Bu ifade her saat başında (örn. 12:00, 13:00, 14:00) job'u çalıştırır.
-    let job = Job::new_async("0 0/1 * * * *", |_uuid, _lock| {
-        Box::pin(async {
-            println!("Tweet atılıyor (1 saatlik cron)...");
-            if let Err(e) = send_tweet("Bu bir cron job ile atılan tweet! #Rust").await {
-                eprintln!("Tweet gönderilirken bir hata oluştu: {}", e);
-            }
-        })
-    })?;
-
-    // Scheduler'a cron job ekle
-    scheduler.add(job).await?;
-
-    // İlk tweet'i hemen at
-    println!("Tweet atılıyor (ilk tweet)...");
-    if let Err(e) = send_tweet("Cron deneme").await {
-        eprintln!("Tweet gönderilirken bir hata oluştu: {}", e);
-    }
-
-    // Scheduler'ı başlat
-    scheduler.start().await?;
-
-    // Scheduler'ın çalışmasını sonsuza kadar bekle
-    tokio::signal::ctrl_c().await?;
-    println!("Uygulama sonlandırıldı.");
     Ok(())
 }
