@@ -52,6 +52,7 @@ async fn main() -> Result<()> {
         .route("/tweet", post(handle_tweet))
         .with_state(state);
 
+    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     println!("🚀 Server running on http://{}", addr);
 
     // run our app with hyper, listening globally on port 3000
