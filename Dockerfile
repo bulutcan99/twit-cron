@@ -1,23 +1,14 @@
-FROM rust:latest AS builder
+# Use the official Rust image from Docker Hub
+FROM rust:latest
 
-WORKDIR /app
+# Set the working directory inside the container
+WORKDIR /usr/src/myapp
 
-COPY Cargo.toml Cargo.lock ./
-RUN mkdir src && echo "fn main() {}" > src/main.rs
-RUN cargo build --release || true
+# Copy the project files into the container
+COPY . .
 
+# Build the project
 RUN cargo build --release
 
-FROM debian:bullseye-slim
-
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-
-COPY --from=builder /app/target/release/twitter-cron .
-
-COPY .env .env
-
-EXPOSE 3000
-
-CMD ["./twitter-cron"]
+# Set the default command to run the application
+CMD ["./target/release/twitter-cron"]
